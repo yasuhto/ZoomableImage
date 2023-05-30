@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class ZoomableImage : MonoBehaviour
 {
@@ -21,26 +21,16 @@ public class ZoomableImage : MonoBehaviour
 
     private void _Scroll()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            _StartTouchPosition = Input.mousePosition;
-        }
+        var dragDelta = this.CalcMouseDragDelta();
 
-        if (Input.GetMouseButton(0))
-        {
-            var dragDelta = Input.mousePosition - _StartTouchPosition;
+        var pos = this.transform.localPosition + dragDelta;
+        var scale = this.transform.localScale;
 
-            var scale = this.transform.localScale;
-            var pos = this.transform.localPosition + dragDelta;
+        //  ç”»åƒãŒå…ƒã®è¡¨ç¤ºç¯„å›²å†…ã«åã¾ã‚‹ã‚ˆã†èª¿æ•´
+        var imRect = this.GetComponent<RectTransform>();
+        pos = CalcAdjustedImageLocalPosition(pos, scale, imRect.rect.width, imRect.rect.height);
 
-            //  ‰æ‘œ‚ªŒ³‚Ì•\¦”ÍˆÍ“à‚Éû‚Ü‚é‚æ‚¤’²®
-            var imRect = this.GetComponent<RectTransform>();
-            pos = CalcAdjustedImageLocalPosition(pos, scale, imRect.rect.width, imRect.rect.height);
-
-            this.transform.localPosition = pos;
-
-            _StartTouchPosition = Input.mousePosition;
-        }
+        this.transform.localPosition = pos;
     }
 
     private void _Zoom()
@@ -52,33 +42,53 @@ public class ZoomableImage : MonoBehaviour
             return;
         }
 
-        Vector2 pastPos = this.transform.localPosition;
+        var pastPos = this.transform.localPosition;
         var pastScale = this.transform.localScale;
 
-        // ƒY[ƒ€‚·‚éƒXƒP[ƒ‹‚ğŒvZ
+        // ã‚ºãƒ¼ãƒ ã™ã‚‹ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è¨ˆç®—
         var scale = this.transform.localScale * (1 + val * ZoomSpeed);
 
-        // ƒJ[ƒ\ƒ‹‚ğ’†S‚ÉƒY[ƒ€‚·‚é‚æ‚¤‚ÉƒIƒtƒZƒbƒgÀ•W‚ğŒvZ
-        var offsetPos = new Vector2(_CursorPotision().x * (scale.x - pastScale.x), _CursorPotision().y * (scale.y - pastScale.y));
+        // ã‚«ãƒ¼ã‚½ãƒ«ã‚’ä¸­å¿ƒã«ã‚ºãƒ¼ãƒ ã™ã‚‹ã‚ˆã†ã«ã‚ªãƒ•ã‚»ãƒƒãƒˆåº§æ¨™ã‚’è¨ˆç®—
+        var offsetPos = new Vector3(_CursorPotision().x * (scale.x - pastScale.x), _CursorPotision().y * (scale.y - pastScale.y), 0f);
         var pos = pastPos - offsetPos;
 
-        //  k¬‚Ì‰æ‘œ‚ªŒ³‚Ì•\¦”ÍˆÍ“à‚Éû‚Ü‚é‚æ‚¤’²®
+        //  ç¸®å°æ™‚ã®ç”»åƒãŒå…ƒã®è¡¨ç¤ºç¯„å›²å†…ã«åã¾ã‚‹ã‚ˆã†èª¿æ•´
         var imRect = this.GetComponent<RectTransform>();
         pos = CalcAdjustedImageLocalPosition(pos, scale, imRect.rect.width, imRect.rect.height);
 
-        // ”{—¦1ˆÈ‰º‚É‚Í‚¹‚¸AƒŠƒZƒbƒg
+        // å€ç‡1ä»¥ä¸‹ã«ã¯ã›ãšã€ãƒªã‚»ãƒƒãƒˆ
         if (scale.x < 1)
         {
             scale = Vector3.one;
-            pos = Vector2.zero;
+            pos = Vector3.zero;
         }
 
         this.transform.localScale = scale;
         this.transform.localPosition = pos;
     }
 
+    private Vector3 CalcMouseDragDelta()
+    {
+        var dragDelta = Vector3.zero;
+
+        //  ãƒ‰ãƒ©ãƒƒã‚°é–‹å§‹ä½ç½®ã‚’ä¿å­˜
+        if (Input.GetMouseButtonDown(0))
+        {
+            this._StartTouchPosition = Input.mousePosition;
+        }
+
+        //  ãƒ‰ãƒ©ãƒƒã‚°ä¸­ã¯å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã¨ã®å·®ã‚’åŠ ç®—ã™ã‚‹
+        if (Input.GetMouseButton(0))
+        {
+            dragDelta = Input.mousePosition - _StartTouchPosition;
+            this._StartTouchPosition = Input.mousePosition;
+        }
+
+        return dragDelta;
+    }
+
     /// <summary>
-    /// Œ³‚Ì•\¦”ÍˆÍ“à‚Éû‚Ü‚é‚æ‚¤‚É’²®‚µ‚½ƒ[ƒJƒ‹À•W‚ğ•Ô‚·
+    /// å…ƒã®è¡¨ç¤ºç¯„å›²å†…ã«åã¾ã‚‹ã‚ˆã†ã«èª¿æ•´ã—ãŸãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã‚’è¿”ã™
     /// </summary>
     public static Vector3 CalcAdjustedImageLocalPosition(Vector3 inPos, Vector3 scale, float width, float height)
     {
@@ -92,7 +102,7 @@ public class ZoomableImage : MonoBehaviour
         return outPos;
     }
 
-    // ‚±‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚ªƒAƒ^ƒbƒ`‚³‚ê‚½ UI Image ã‚Ìƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌÀ•W‚ğæ“¾
+    // ã“ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒã‚¢ã‚¿ãƒƒãƒã•ã‚ŒãŸ UI Image ä¸Šã®ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®åº§æ¨™ã‚’å–å¾—
     private Vector2 _CursorPotision()
     {
         var canvas = this.GetComponentInParent<Canvas>();
