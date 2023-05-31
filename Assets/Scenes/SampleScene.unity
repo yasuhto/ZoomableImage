@@ -408,7 +408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
+  m_IgnoreReversedGraphics: 0
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
@@ -530,6 +530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 801e3fa518b3e5a4887606834dfc8920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ZoomSpeed: 0.2
 --- !u!114 &2008307095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -550,7 +551,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 14a2a43b39cc80f47aecd897748b3f06, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2c6c648d2f2d6d545b9f7e0c03357f98, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
