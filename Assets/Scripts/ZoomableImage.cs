@@ -26,7 +26,7 @@ public class ZoomableImage : MonoBehaviour
         var pos = this.transform.localPosition + dragDelta;
         var scale = this.transform.localScale;
 
-        //  画像が元の表示範囲内に収まるよう調整
+        //  画像がCanvas内に収まるよう調整
         var imRect = this.GetComponent<RectTransform>();
         pos = CalcAdjustedImageLocalPosition(pos, scale, imRect.rect.width, imRect.rect.height);
 
@@ -46,13 +46,13 @@ public class ZoomableImage : MonoBehaviour
         var pastScale = this.transform.localScale;
 
         // ズームするスケールを計算
-        var scale = this.transform.localScale * (1 + val * ZoomSpeed);
+        var scale = this.transform.localScale * (1 + val * this.ZoomSpeed);
 
         // カーソルを中心にズームするようにオフセット座標を計算
-        var offsetPos = new Vector3(_CursorPotision().x * (scale.x - pastScale.x), _CursorPotision().y * (scale.y - pastScale.y), 0f);
+        var offsetPos = new Vector3(this._CursorPotision().x * (scale.x - pastScale.x), this._CursorPotision().y * (scale.y - pastScale.y), 0f);
         var pos = pastPos - offsetPos;
 
-        //  縮小時の画像が元の表示範囲内に収まるよう調整
+        //  縮小時の画像がCanvas内に収まるよう調整
         var imRect = this.GetComponent<RectTransform>();
         pos = CalcAdjustedImageLocalPosition(pos, scale, imRect.rect.width, imRect.rect.height);
 
@@ -88,7 +88,7 @@ public class ZoomableImage : MonoBehaviour
     }
 
     /// <summary>
-    /// 元の表示範囲内に収まるように調整したローカル座標を返す
+    /// 指定した表示範囲内に収まるように調整したローカル座標を返す
     /// </summary>
     public static Vector3 CalcAdjustedImageLocalPosition(Vector3 inPos, Vector3 scale, float width, float height)
     {
